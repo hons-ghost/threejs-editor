@@ -9,6 +9,7 @@ export class Menu {
     dom = document.getElementById("menu")
 
     constructor(private loader: Loader, private modeler: Modeler) {
+        this.LoadModel(0)
         this.drawMenu()
     }
     drawMenu() {
@@ -17,8 +18,8 @@ export class Menu {
         assets.forEach((v, k, map) => {
             const modelName = Char[k]
             html += `
-        <div class="row">
-            <div class="col p-2 text-center handcursor" id="menu_${modelName}">
+        <div class="row p-0 m-0">
+            <div class="col ps-2 pe-2 text-center handcursor" id="menu_${modelName}">
             ${modelName}
             </div>
         </div>
@@ -40,7 +41,7 @@ export class Menu {
         const [mesh, exist] = await newModel?.UniqModel(Char[id])
         if (!mesh) return
 
-        this.modeler.updateModel(mesh, Char[id])
+        this.modeler.updateModel(mesh, Char[id], newModel)
         this.drawAnimation(id)
         this.LoadAnimation(id, 0)
     }

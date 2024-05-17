@@ -29,11 +29,11 @@ export class Helper {
     }
 
     CreateVectorGui(f: GUI, v: THREE.Vector3 | THREE.Euler, name: string) {
-        f.add(v, "x", -100, 100, 0.1).listen().name(name + "X")
-        f.add(v, "y", -100, 100, 0.1).listen().name(name + "Y")
-        f.add(v, "z", -100, 100, 0.1).listen().name(name + "Z")
+        f.add(v, "x", -100, 100, 0.01).listen().name(name + "X")
+        f.add(v, "y", -100, 100, 0.01).listen().name(name + "Y")
+        f.add(v, "z", -100, 100, 0.01).listen().name(name + "Z")
     }
-    CreateMeshGui(meshs: THREE.Group | THREE.Mesh | THREE.Sprite | THREE.Points, name: string) {
+    CreateMeshGui(meshs: THREE.Group | THREE.Mesh | THREE.Sprite | THREE.Points | THREE.Object3D, name: string) {
         const fp = this.gui.addFolder(name)
         this.CreateVectorGui(fp, meshs.position, "Pos")
         this.CreateVectorGui(fp, meshs.rotation, "Rot")
