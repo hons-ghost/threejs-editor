@@ -3,6 +3,7 @@ import { GUI } from "lil-gui"
 import { Loader } from './loader/loader'
 import { Helper, gui } from './helper'
 import { IAsset } from './loader/assetmodel'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 export class SizeBox extends THREE.Mesh {
     constructor(box3: THREE.Box3) {
@@ -53,8 +54,10 @@ export class Modeler {
     threeTone = this.textureLoader.load('img/threeTone.jpg')
     constructor(
         private scene: THREE.Scene,
+        private camera: THREE.PerspectiveCamera,
         private loader: Loader,
         private helper: Helper,
+        private controls: OrbitControls, 
     ) {
         this.threeTone.minFilter = THREE.NearestFilter
         this.threeTone.magFilter = THREE.NearestFilter
@@ -78,6 +81,7 @@ export class Modeler {
             if (!this.sizeBox) throw new Error("need to create box");
 
             this.scene.add(this.sizeBox)
+            this.setCamera(model, asset)
         }
         this.target = model
         this.name = name
@@ -96,6 +100,31 @@ export class Modeler {
         currentAction.setLoop(THREE.LoopRepeat, 10000)
         currentAction.reset().fadeIn(0.2).play()
         this.currentAni = currentAction
+    }
+    setCamera(model: THREE.Group, asset: IAsset) {
+        // 모델 위치와 크기 계산
+        const box = asset.GetBox(model)
+        const center = box.getCenter(new THREE.Vector3());
+        const size = asset.GetSize(model)
+
+        // 2. Calculate the distance the camera needs to be at to fit the entire model in view
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const fov = this.camera.fov * (Math.PI / 180); // Convert vertical FOV to radians
+        const aspect = window.innerWidth / window.innerHeight;
+
+        // Calculate distance for vertical and horizontal FOV
+        const distance = maxDim / (2 * Math.tan(fov / 2));
+        const horizontalFov = 2 * Math.atan(Math.tan(fov / 2) * aspect);
+        const distanceHorizontally = maxDim / (2 * Math.tan(horizontalFov / 2));
+
+        // Choose the larger distance to ensure the model fits in both dimensions
+        const cameraZ = Math.max(distance, distanceHorizontally);
+
+        this.camera.position.set(cameraZ + center.x, center.y, cameraZ + center.z);
+        this.camera.lookAt(center);
+
+        this.controls.target.copy(center)
+        this.controls.update()
     }
     clock = new THREE.Clock()
     render() {
