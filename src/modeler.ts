@@ -48,7 +48,7 @@ export class Modeler {
     mixer?: THREE.AnimationMixer
     currentAni?: THREE.AnimationAction
     name = "cube"
-    fp?: GUI
+    fp: GUI[] = []
 
     textureLoader = new THREE.TextureLoader()
     threeTone = this.textureLoader.load('img/threeTone.jpg')
@@ -87,10 +87,10 @@ export class Modeler {
         this.name = name
         this.mixer = new THREE.AnimationMixer(model)
         this.scene.add(this.target)
-        if (this.fp) this.fp.destroy()
-        this.fp = this.helper.CreateMeshGui(this.target, this.name)
-        if (this.target.children[0]) this.fp = this.helper.CreateMeshGui(this.target.children[0], this.name + ".child")
-        if (this.sizeBox) this.fp = this.helper.CreateMeshGui(this.sizeBox as THREE.Mesh, "box")
+        this.fp.forEach((g) => g.destroy())
+        this.fp.push(this.helper.CreateMeshGui(this.target, this.name))
+        if (this.target.children[0]) this.fp.push(this.helper.CreateMeshGui(this.target.children[0], this.name + ".child"))
+        if (this.sizeBox) this.fp.push(this.helper.CreateMeshGui(this.sizeBox as THREE.Mesh, "box"))
     }
     updateAni(ani: THREE.AnimationClip) {
         this.currentAni?.fadeOut(0.2)

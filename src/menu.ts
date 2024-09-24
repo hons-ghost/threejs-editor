@@ -4,13 +4,19 @@ import { Loader } from './loader/loader'
 import { Modeler } from './modeler';
 import { EffectType, Effector } from './effects/effector';
 import { capture } from './study/capture';
+import { IPostPro } from './postpro';
 
 
 
 export class Menu {
     dom = document.getElementById("menu")
 
-    constructor(private loader: Loader, private modeler: Modeler, private effector: Effector) {
+    constructor(
+        private loader: Loader, 
+        private modeler: Modeler, 
+        private effector: Effector,
+        private pp: IPostPro
+    ) {
         this.LoadModel(0)
         this.drawMenu()
         this.drawEffectMenu()
@@ -62,6 +68,7 @@ export class Menu {
 
         const [mesh, exist] = await newModel?.UniqModel(Char[id])
         if (!mesh) return
+        this.pp.setNonGlow(mesh)
 
         this.modeler.updateModel(mesh, Char[id], newModel)
         this.drawAnimation(id)
