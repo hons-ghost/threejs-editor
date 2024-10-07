@@ -1,68 +1,70 @@
 import * as THREE from 'three'
-/*
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass'
-import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass'
-import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass'
-import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader'
-*/
-import {
-  EffectComposer, EffectPass, RenderPass,
-  BloomEffect, SelectiveBloomEffect, ShaderPass, OutlineEffect, SMAAEffect, BlendFunction, SMAAPreset, EdgeDetectionMode
-} from 'postprocessing'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { Loader } from './loader/loader'
-import { Menu } from './menu'
-import { Helper } from './helper'
-import { Modeler } from './modeler'
+import { Menu } from './ui/menu'
+import { Helper } from './ui/helper'
+import { Modeler } from './ui/modeler'
 import { Effector } from './effects/effector'
 import { IPostPro, Postpro } from './postpro'
+import { Postpro3 } from './postpro3'
+import { ParticleTester } from './test/particletester'
+import { EfTester} from './test/eftest'
 
 export class Editor {
   scene = new THREE.Scene()
-  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000)
   renderer = new THREE.WebGLRenderer({
     antialias: true,
+    /*
     powerPreference: "high-performance",
     stencil: false,
     depth: false,
+    */
   })
   
   controls: OrbitControls
   modeler: Modeler
   menu: Menu
 
+  helper: Helper
   loader = new Loader()
-  helper = new Helper(this.scene)
   effector = new Effector(this.scene)
+  nebula: ParticleTester
+  tester: EfTester
   pp: IPostPro
   constructor() {
     this.camera.position.set(4, 4, 4)
     this.camera.lookAt(new THREE.Vector3().set(0, 2, 0))
     THREE.ColorManagement.enabled = true
     this.renderer.outputColorSpace = THREE.SRGBColorSpace
+    //this.renderer.toneMapping = THREE.ACESFilmicToneMapping
+    //this.renderer.toneMappingExposure = .8
     this.renderer.shadowMap.enabled = true
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
     this.renderer.setSize(window.innerWidth, window.innerHeight)
     //this.renderer.setClearColor(0x66ccff, 1)
 
     this.pp = new Postpro(this.scene, this.camera, this.renderer)
+    this.effector.SetNonGlow((mesh: any) => { this.pp.setNonGlow(mesh) })
 
-    const abmbient = new THREE.AmbientLight(0xffffff, 0.5)
+    const abmbient = new THREE.AmbientLight(0xffffff, 3)
     const hemispherelight = new THREE.HemisphereLight(0xffffff, 0x333333)
     hemispherelight.position.set(0, 20, 10)
-    const directlight = new THREE.DirectionalLight(0xffffff, 5);
+    const directlight = new THREE.DirectionalLight(0xffffff, 1);
     directlight.position.set(4, 10, 4)
     directlight.lookAt(new THREE.Vector3().set(0, 2, 0))
     this.scene.add(abmbient, /*hemispherelight,*/ directlight, /*this.effector.meshs*/)
 
     document.body.appendChild(this.renderer.domElement)
+    const nonglowfn = (mesh: any) => { this.pp.setNonGlow(mesh) }
+    this.nebula = new ParticleTester(this.scene, nonglowfn)
+    this.tester = new EfTester(this.scene, nonglowfn)
+    this.helper = new Helper(this.scene, nonglowfn)
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
-    this.modeler = new Modeler(this.scene, this.camera, this.loader, this.helper, this.controls)
-    this.menu = new Menu(this.loader, this.modeler, this.effector, this.pp)
+    this.modeler = new Modeler(this.scene, this.camera, this.loader, this.helper, this.controls, nonglowfn)
+    this.menu = new Menu(this.loader, this.modeler, this.effector, nonglowfn)
 
+    this.ground()
     window.addEventListener('resize', this.resize.bind(this), false)
     this.resize()
   }
@@ -80,6 +82,31 @@ export class Editor {
       this.animate()
     })
   }
+  ground() {
+    const texture = new THREE.TextureLoader().load("assets/texture/Cartoon_green_texture_grass.jpg")
+    texture.wrapS = THREE.RepeatWrapping
+    texture.wrapT = THREE.RepeatWrapping
+    const normal = new THREE.TextureLoader().load("assets/texture/Cartoon_green_texture_grass.jpg")
+    normal.wrapS = THREE.RepeatWrapping
+    normal.wrapT = THREE.RepeatWrapping
+    normal.minFilter = THREE.LinearFilter
+    normal.magFilter = THREE.LinearFilter
+    texture.repeat.set(10, 10)
+    const planeGeometry = new THREE.PlaneGeometry(32, 32);
+    const material = new THREE.MeshStandardMaterial({
+      //map: texture,
+      //alphaMap: texture,
+      //transparent: true,
+      color: 0xffcc66,
+      //normalMap: normal
+    })
+    const ground = new THREE.Mesh(planeGeometry, material);
+    ground.rotation.x = -Math.PI / 2; // 땅에 평행하게 회전
+    ground.position.setY(-.01)
+    ground.receiveShadow = true
+    this.pp.setNonGlow(ground)
+    this.scene.add(ground)
+  }
   clock = new THREE.Clock()
   test = new THREE.Vector3()
   render() {
@@ -89,6 +116,8 @@ export class Editor {
     this.modeler.render()
 
     this.pp.render(delta)
+    this.nebula.Update(delta)
+    this.tester.Update(delta)
 
     this.effector.Update(delta, this.test)
     this.helper.CheckStateEnd()

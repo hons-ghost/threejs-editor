@@ -19,6 +19,13 @@ module.exports = {
         },
       },
       {
+        test: /\.glsl$/, // .ts 에 한하여 ts-loader를 이용하여 transpiling
+        exclude: /node_module/,
+        use: {
+          loader: "ts-shader-loader",
+        },
+      },
+      {
         test: /\.ts$/, // .ts 에 한하여 ts-loader를 이용하여 transpiling
         exclude: /node_module/,
         use: {
@@ -31,6 +38,10 @@ module.exports = {
     modules: [path.join(__dirname, "src"), "node_modules"], // 모듈 위치
     extensions: [".ts", ".js"],
     symlinks: false,
+    alias: {
+      "@Assets": path.resolve(__dirname, "assets"),
+      "@Loader": path.resolve(__dirname, "src/loader"),
+    }
   },
   plugins: [
     new HtmlWebpackPlugin({

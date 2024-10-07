@@ -6,6 +6,7 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass'
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass'
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass'
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader'
+import { ColorCorrectionShader } from 'three/examples/jsm/shaders/ColorCorrectionShader'
 
 export interface IPostPro {
   setGlow(target: THREE.Mesh | THREE.Group): void
@@ -18,7 +19,7 @@ export class Postpro implements IPostPro {
   renderScene = new RenderPass(this.scene, this.camera)
   bloomPass = new UnrealBloomPass(
     new THREE.Vector2(window.innerWidth, window.innerHeight),
-    .5, .5, 0
+    2, .01, .7
   )
   rendertarget1 = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, {
     type: THREE.HalfFloatType,
@@ -45,6 +46,10 @@ export class Postpro implements IPostPro {
     this.bloomComposer.addPass(new SMAAPass(
       window.innerWidth * this.renderer.getPixelRatio(), 
       window.innerHeight * this.renderer.getPixelRatio()))
+    const colorCorrectionPass = new ShaderPass(ColorCorrectionShader);
+    colorCorrectionPass.uniforms['powRGB'].value = new THREE.Vector3(.9, .9, .9);  // 밝기 조절
+    colorCorrectionPass.uniforms['mulRGB'].value = new THREE.Vector3(.1, .1, .1);
+    this.bloomComposer.addPass(colorCorrectionPass)
     const finalPass = new ShaderPass(
       new THREE.ShaderMaterial({
         uniforms: {
@@ -67,6 +72,9 @@ export class Postpro implements IPostPro {
     this.finalComposer = new EffectComposer(renderer, target2);
     this.finalComposer.addPass(this.renderScene);
     this.finalComposer.addPass(finalPass);
+    this.finalComposer.addPass(new SMAAPass(
+      window.innerWidth * this.renderer.getPixelRatio(), 
+      window.innerHeight * this.renderer.getPixelRatio()))
   }
   resize(): void {
     this.bloomComposer.setSize(window.innerWidth, window.innerHeight)
@@ -95,7 +103,7 @@ export class Postpro implements IPostPro {
   render(delta: number) {
     this.gu.globalBloom.value = 1
     this.bloomComposer.render()
-    this.gu.globalBloom.value = 0.2
+    this.gu.globalBloom.value = 0
     this.finalComposer.render()
   }
 }
