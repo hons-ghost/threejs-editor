@@ -8,7 +8,6 @@ import { capture } from './capture';
 
 
 export class Menu {
-    dom = document.getElementById("menu")
 
     constructor(
         private loader: Loader, 
@@ -16,7 +15,7 @@ export class Menu {
         private effector: Effector,
         private setNonGlow: Function
     ) {
-        this.LoadModel(0)
+        //this.LoadModel(0)
         this.drawMenu()
         this.drawEffectMenu()
     }
@@ -39,27 +38,46 @@ export class Menu {
         dom.onchange = e
         btn.onclick = e
     }
+    drawAnimation(id: Char) {
+        const dom = document.getElementById("clips") as HTMLSelectElement
+        const btn = document.getElementById("clipBtn") as HTMLButtonElement
+        const model = this.loader.assets.get(id);
+        if (model == undefined) return
+        while (dom.hasChildNodes() && dom.firstChild) dom.removeChild(dom.firstChild)
+
+        const clips = model.Clips
+        clips.forEach((v, k, map) => {
+            const modelName = Ani[k]
+            const opt = document.createElement("option")
+            opt.value = k.toString()
+            opt.text = modelName
+            dom.appendChild(opt)
+        })
+        const e = () => {
+            const k = Number(dom.value) as Ani
+            this.LoadAnimation(id, k)
+        }
+        dom.onchange = e
+        btn.onclick = e
+    }
     drawMenu() {
+        const dom = document.getElementById("menu") as HTMLSelectElement
+        const btn = document.getElementById("loadBtn") as HTMLButtonElement
         const assets = this.loader.assets;
         let html = ""
         assets.forEach((v, k, map) => {
             const modelName = Char[k]
-            html += `
-        <div class="row p-0 m-0">
-            <div class="col ps-2 pe-2 text-center handcursor" id="menu_${modelName}">
-            ${modelName}
-            </div>
-        </div>
-            `
+            const opt = document.createElement("option")
+            opt.value = k.toString()
+            opt.text = modelName
+            dom.appendChild(opt)
         })
-        const dom = document.getElementById("menu")
-        if (dom) dom.innerHTML = html
-
-        assets.forEach((v, k, map) => {
-            const modelName = Char[k]
-            const dom = document.getElementById("menu_" + modelName)
-            if (dom) dom.onclick = () => { this.LoadModel(k) }
-        })
+        const e = () => {
+            const k = Number(dom.value) as Char
+            this.LoadModel(k)
+        }
+        dom.onchange = e
+        btn.onclick = e
     }
     async LoadModel(id: Char) {
         const newModel = this.loader.assets.get(id);
@@ -82,29 +100,7 @@ export class Menu {
         if (ani == undefined) return
         this.modeler.updateAni(ani)
     }
-    drawAnimation(id: Char) {
-        const model = this.loader.assets.get(id);
-        if (model == undefined) return
-        const clips = model.Clips
-        let html = ""
-        clips.forEach((v, k, map) => {
-            const modelName = Ani[k]
-            html += `
-        <div class="row">
-            <div class="col p-2 text-center handcursor" id="clips_${modelName}">
-            ${modelName}
-            </div>
-        </div>
-            `
-        })
-        const dom = document.getElementById("clips")
-        if (dom) dom.innerHTML = html
-        clips.forEach((v, k, map) => {
-            const modelName = Ani[k]
-            const dom = document.getElementById("clips_" + modelName)
-            if (dom) dom.onclick = () => { this.LoadAnimation(id, k) }
-        })
-    }
+    
     async drawCapture(id: Char) {
         const newModel = this.loader.assets.get(id);
         if (!newModel) throw new Error("error");

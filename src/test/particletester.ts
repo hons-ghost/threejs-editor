@@ -20,13 +20,14 @@ export class ParticleTester {
         alphaUpdate: () => {
             this.alpha.reset(this.param.alphaS, this.param.alphaE, this.param.alphaLife)
         },
-        colorS: 0xff0000,
-        colorE: 0xff0000,
+        colorS: 0xffcc00,
+        colorE: 0xffa500,
+        //colorE: 0x8b4513,
         colorUpdate: () => {
             this.color.reset(new THREE.Color(this.param.colorS), new THREE.Color(this.param.colorE))
         },
-        scaleS: .2,
-        scaleE: .2,
+        scaleS: .15,
+        scaleE: .15,
         scaleLife: 1,
         scaleUpdate: () => {
             this.scale.reset(this.param.scaleS, this.param.scaleE, this.param.scaleLife)
@@ -90,12 +91,9 @@ export class ParticleTester {
     gui: GUI
     guiItems: Controller[] = []
 
-    texture = new THREE.TextureLoader().load("assets/texture/fireparticle.png")
-    emitTexture = new Texture(THREE, this.texture, { 
-        depthWrite: false, blending: THREE.AdditiveBlending,
-        depthTest: true, transparent: true, alphaTest: .5,
-        opacity: 1
-    })
+    //texture = new THREE.TextureLoader().load("assets/texture/fxtexture/32x32_Arcane_3.png")
+    texture = new THREE.TextureLoader().load("assets/texture/sparks.png")
+    emitTexture: Texture
 
     constructor(private scene: THREE.Scene, private nonglowfn: Function) {
         this.gui = gui.addFolder("Nebula")
@@ -105,6 +103,11 @@ export class ParticleTester {
             } else {
                 this.Complete()
             }
+        })
+        this.texture.minFilter = this.texture.magFilter = THREE.LinearFilter
+        this.emitTexture = new Texture(THREE, this.texture, {
+            depthWrite: false, blending: THREE.NormalBlending,
+            depthTest: true, transparent: true, alphaTest: 0,
         })
     }
     Complete() {

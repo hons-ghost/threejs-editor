@@ -15,11 +15,6 @@ export class SizeBox extends THREE.Mesh {
         const matrix = new THREE.Matrix4().setPosition(dimensions.addVectors(box3.min, box3.max).multiplyScalar(0.5));
         boxGeo.applyMatrix4(matrix);
         const material = new THREE.MeshBasicMaterial({
-            //color: 0xD9AB61,
-            //transparent: true,
-            //opacity: 0,
-            //color: 0xff0000,
-            //depthWrite: false,
             color: 0xffffff,
             wireframe: true
         })

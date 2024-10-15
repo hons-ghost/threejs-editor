@@ -1,18 +1,11 @@
 import * as THREE from 'three';
 import { gui } from "../ui/helper"
-import GUI, { Controller } from 'lil-gui';
+import GUI from 'lil-gui';
 
 export class EfTester {
     processFlag = false
     obj = new THREE.Group()
-    param = {
-        alphaS: 1,
-        alphaE: 1,
-        alphaLife: 1,
-        alphaUpdate: () => {
-        },
-        start: false
-    }
+    param = { start: false }
     gui: GUI
 
     texture = new THREE.TextureLoader().load("assets/texture/fxtexture/32x16_FX_0.png")
@@ -20,7 +13,8 @@ export class EfTester {
     material: THREE.ShaderMaterial
 
     constructor(private scene: THREE.Scene, private nonglowfn: Function) {
-        this.gui = gui.addFolder("Test")
+        this.gui = gui.addFolder("fireTest")
+        this.gui.close()
         this.gui.add(this.param, "start").onChange((value: boolean) => {
             if (value) {
                 this.Start()
@@ -31,7 +25,7 @@ export class EfTester {
         this.texture.wrapS = THREE.RepeatWrapping
         this.texture.wrapT = THREE.RepeatWrapping
         // 땅에서 빛이 솟구치는 쉐이더 코드
-        this.texture.repeat.set(1, 3)
+        this.texture.repeat.set(1/3, 1/3)
         //this.texture.center.set(.5, .5)
         //this.texture.rotation = Math.PI / 2
 

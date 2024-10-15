@@ -8,7 +8,12 @@ import { Effector } from './effects/effector'
 import { IPostPro, Postpro } from './postpro'
 import { Postpro3 } from './postpro3'
 import { ParticleTester } from './test/particletester'
-import { EfTester} from './test/eftest'
+import { EfTester } from './test/eftest'
+import { SlashTest } from './test/slashtest'
+import { AniVfx } from './test/anitest'
+import { NoiseVfx } from './test/noiseslash'
+import { DefaultMap } from './test/defaultmap'
+import { DefaultMap2 } from './test/defaultmap2'
 
 export class Editor {
   scene = new THREE.Scene()
@@ -21,7 +26,7 @@ export class Editor {
     depth: false,
     */
   })
-  
+
   controls: OrbitControls
   modeler: Modeler
   menu: Menu
@@ -31,40 +36,45 @@ export class Editor {
   effector = new Effector(this.scene)
   nebula: ParticleTester
   tester: EfTester
+  slashTester: SlashTest
+  aniTest: AniVfx
+  noiseTest: NoiseVfx
   pp: IPostPro
   constructor() {
     this.camera.position.set(4, 4, 4)
     this.camera.lookAt(new THREE.Vector3().set(0, 2, 0))
+    // Renderer Start
     THREE.ColorManagement.enabled = true
     this.renderer.outputColorSpace = THREE.SRGBColorSpace
-    //this.renderer.toneMapping = THREE.ACESFilmicToneMapping
-    //this.renderer.toneMappingExposure = .8
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping
+    this.renderer.toneMappingExposure = .8
     this.renderer.shadowMap.enabled = true
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
     this.renderer.setSize(window.innerWidth, window.innerHeight)
     //this.renderer.setClearColor(0x66ccff, 1)
-
     this.pp = new Postpro(this.scene, this.camera, this.renderer)
-    this.effector.SetNonGlow((mesh: any) => { this.pp.setNonGlow(mesh) })
+    // Renderer End
 
-    const abmbient = new THREE.AmbientLight(0xffffff, 3)
-    const hemispherelight = new THREE.HemisphereLight(0xffffff, 0x333333)
-    hemispherelight.position.set(0, 20, 10)
-    const directlight = new THREE.DirectionalLight(0xffffff, 1);
-    directlight.position.set(4, 10, 4)
-    directlight.lookAt(new THREE.Vector3().set(0, 2, 0))
-    this.scene.add(abmbient, /*hemispherelight,*/ directlight, /*this.effector.meshs*/)
+    this.effector.SetNonGlow((mesh: any) => { this.pp.setNonGlow(mesh) })
+    this.light()
 
     document.body.appendChild(this.renderer.domElement)
     const nonglowfn = (mesh: any) => { this.pp.setNonGlow(mesh) }
+    // Tester Start
     this.nebula = new ParticleTester(this.scene, nonglowfn)
     this.tester = new EfTester(this.scene, nonglowfn)
+    this.slashTester = new SlashTest(this.scene, nonglowfn)
+    this.aniTest = new AniVfx(this.scene)
+    this.noiseTest = new NoiseVfx(this.scene)
+    // Test End
     this.helper = new Helper(this.scene, nonglowfn)
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.modeler = new Modeler(this.scene, this.camera, this.loader, this.helper, this.controls, nonglowfn)
     this.menu = new Menu(this.loader, this.modeler, this.effector, nonglowfn)
 
-    this.ground()
+    const ground = new DefaultMap2(this.scene, nonglowfn)
+    //const ground = new DefaultMap(this.scene, nonglowfn)
+    //this.ground()
     window.addEventListener('resize', this.resize.bind(this), false)
     this.resize()
   }
@@ -81,6 +91,25 @@ export class Editor {
       this.render()
       this.animate()
     })
+  }
+  light() {
+    const abmbient = new THREE.AmbientLight(0xffffff, 1)
+    const hemispherelight = new THREE.HemisphereLight(0xffffff, 0x333333)
+    hemispherelight.position.set(0, 20, 10)
+    const directlight = new THREE.DirectionalLight(0xffffff, 3);
+    directlight.position.set(4, 10, 4)
+    directlight.lookAt(new THREE.Vector3().set(0, 2, 0))
+    directlight.castShadow = true
+    directlight.shadow.radius = 1000
+    directlight.shadow.mapSize.width = 4096
+    directlight.shadow.mapSize.height = 4096
+    directlight.shadow.camera.near = 1
+    directlight.shadow.camera.far = 1000.0
+    directlight.shadow.camera.left = 500
+    directlight.shadow.camera.right = -500
+    directlight.shadow.camera.top = 500
+    directlight.shadow.camera.bottom = -500
+    this.scene.add(abmbient, /*hemispherelight,*/ directlight, /*this.effector.meshs*/)
   }
   ground() {
     const texture = new THREE.TextureLoader().load("assets/texture/Cartoon_green_texture_grass.jpg")
@@ -118,6 +147,8 @@ export class Editor {
     this.pp.render(delta)
     this.nebula.Update(delta)
     this.tester.Update(delta)
+    this.slashTester.Update(delta)
+    this.noiseTest.Update(delta)
 
     this.effector.Update(delta, this.test)
     this.helper.CheckStateEnd()
