@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { Loader } from './loader/loader'
 import { Menu } from './ui/menu'
-import { Helper } from './ui/helper'
+import { Helper } from './helper/helper'
 import { Modeler } from './ui/modeler'
 import { Effector } from './effects/effector'
 import { IPostPro, Postpro } from './postpro'
@@ -97,7 +97,7 @@ export class Editor {
     const hemispherelight = new THREE.HemisphereLight(0xffffff, 0x333333)
     hemispherelight.position.set(0, 20, 10)
     const directlight = new THREE.DirectionalLight(0xffffff, 3);
-    directlight.position.set(4, 10, 4)
+    directlight.position.set(-4, 10, 4)
     directlight.lookAt(new THREE.Vector3().set(0, 2, 0))
     directlight.castShadow = true
     directlight.shadow.radius = 1000

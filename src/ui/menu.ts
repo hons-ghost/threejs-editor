@@ -13,9 +13,10 @@ export class Menu {
         private loader: Loader, 
         private modeler: Modeler, 
         private effector: Effector,
-        private setNonGlow: Function
+        private setNonGlow: Function,
+        defaultLoad: boolean = false,
     ) {
-        //this.LoadModel(0)
+        if (defaultLoad) this.LoadModel(Char.Male)
         this.drawMenu()
         this.drawEffectMenu()
     }

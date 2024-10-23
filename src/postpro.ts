@@ -10,7 +10,7 @@ import { ColorCorrectionShader } from 'three/examples/jsm/shaders/ColorCorrectio
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader'
 import { ToonShader1 } from 'three/examples/jsm/shaders/ToonShader'
 import GUI from 'lil-gui'
-import { gui } from './ui/helper'
+import { gui } from './helper/helper'
 
 export interface IPostPro {
   setGlow(target: THREE.Mesh | THREE.Group): void

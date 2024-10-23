@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { gui } from "../ui/helper"
+import { gui } from "../helper/helper"
 import GUI from 'lil-gui';
 
 export class AniVfx {
