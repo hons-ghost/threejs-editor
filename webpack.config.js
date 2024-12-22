@@ -40,7 +40,7 @@ module.exports = {
     symlinks: false,
     alias: {
       "@Assets": path.resolve(__dirname, "assets"),
-      "@Loader": path.resolve(__dirname, "src/loader"),
+      "@Glibs": path.resolve(__dirname, "src/gsdk/src"),
     }
   },
   plugins: [

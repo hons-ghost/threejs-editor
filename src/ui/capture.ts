@@ -1,5 +1,5 @@
+import { IAsset } from '@Glibs/interface/iasset'
 import * as THREE from 'three'
-import { IAsset } from '@Loader/assetmodel'
 
 export const capture = (model: THREE.Group, asset: IAsset, name: string) => {
     const scene = new THREE.Scene()

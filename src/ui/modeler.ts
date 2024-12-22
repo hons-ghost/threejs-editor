@@ -1,9 +1,9 @@
 import * as THREE from 'three'
 import { GUI } from "lil-gui"
-import { Loader } from '@Loader/loader'
-import { Helper, gui } from '../helper/helper'
-import { IAsset } from '@Loader/assetmodel'
+import { Loader } from '@Glibs/loader/loader'
+import { Helper, gui } from '@Glibs/helper/helper'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { IAsset } from '@Glibs/interface/iasset'
 
 export class SizeBox extends THREE.Mesh {
     constructor(box3: THREE.Box3) {

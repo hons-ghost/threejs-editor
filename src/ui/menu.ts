@@ -1,9 +1,10 @@
 import * as THREE from 'three'
-import { Ani, Char } from '@Loader/assetmodel';
-import { Loader } from '@Loader/loader'
 import { Modeler } from './modeler';
-import { EffectType, Effector } from '../effects/effector';
+import { Effector } from '@Glibs/magical/effects/effector';
 import { capture } from './capture';
+import { Loader } from '@Glibs/loader/loader';
+import { Ani, Char } from '@Glibs/types/assettypes';
+import { EffectType } from '@Glibs/types/effecttypes';
 
 
 

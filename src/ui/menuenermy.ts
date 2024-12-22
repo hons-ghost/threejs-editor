@@ -1,7 +1,7 @@
 import * as THREE from 'three'
-import { Ani, Char } from '@Loader/assetmodel';
-import { Loader } from '@Loader/loader'
 import { Modeler } from './modeler';
+import { Ani, Char } from '@Glibs/types/assettypes';
+import { Loader } from '@Glibs/loader/loader';
 
 export class MenuEnermy {
     defaultDis = 10
