@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { gui } from "../helper/helper"
+import { gui } from "@Glibs/helper/helper"
 import GUI from 'lil-gui';
 
 export class SlashTest {

@@ -4,7 +4,7 @@ import {
     Emitter, Force, Rate, Span, RadialVelocity, Position, SphereZone, Vector3D,
     Color, Alpha, Scale, SpriteRenderer
 } from 'three-nebula';
-import { gui } from "../helper/helper"
+import { gui } from "@Glibs/helper/helper"
 import GUI, { Controller } from 'lil-gui';
 import { VertexColors } from 'three-nebula/src/core/three';
 
