@@ -110,6 +110,7 @@
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
   "exclude": [
+    "src/gsdk/src/actors/agent",
     "src/gsdk/src/actors/player",
     "src/gsdk/src/world/fluffytree",
   ]
