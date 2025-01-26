@@ -55,11 +55,12 @@ export class Modeler {
         private loader: Loader,
         private helper: Helper,
         private controls: OrbitControls, 
-        private setNonGlow?: Function
+        private setNonGlow?: Function,
+        { cubeEnable = true } = {}
     ) {
         //helper.CreateMeshGui(this.cube, this.name)
         this.setNonGlow?.(this.cube)
-        this.scene.add(this.cube)
+        if(cubeEnable) this.scene.add(this.cube)
     }
     setDistance(dis: number) {
         if (this.target && this.targetEnermy) {

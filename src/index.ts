@@ -32,7 +32,7 @@ export class Editor {
   menu: Menu
 
   helper: Helper
-  loader = new Loader()
+  loader = new Loader("./")
   effector = new Effector(this.scene)
   nebula: ParticleTester
   tester: EfTester
