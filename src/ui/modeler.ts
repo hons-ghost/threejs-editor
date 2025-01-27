@@ -65,6 +65,7 @@ export class Modeler {
     setDistance(dis: number) {
         if (this.target && this.targetEnermy) {
             this.targetEnermy.position.set(-dis, 0, 0)
+            console.log("move position: ", this.targetEnermy.position)
             this.setMultiCamera(this.target.position, this.targetEnermy.position)
         }
     }

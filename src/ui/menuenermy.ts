@@ -19,7 +19,7 @@ export class MenuEnermy {
     drawMenu() {
         const dom = document.getElementById("menuEnermy") as HTMLSelectElement
         const btn = document.getElementById("loadEnermyBtn") as HTMLButtonElement
-        const assets = this.loader.assets;
+        const assets = this.loader.fabClasses;
         let html = ""
         assets.forEach((v, k, map) => {
             const modelName = Char[k]
@@ -58,7 +58,7 @@ export class MenuEnermy {
         this.modeler.setDistance(dis)
     }
     async LoadModel(id: Char) {
-        const newModel = this.loader.assets.get(id);
+        const newModel = this.loader.GetAssets(id);
         if (!newModel) throw new Error("error");
 
         const [mesh, exist] = await newModel?.UniqModel(Char[id])
@@ -69,7 +69,7 @@ export class MenuEnermy {
         this.LoadAnimation(id, 0)
     }
     async LoadAnimation(id: Char, aniId: Ani) {
-        const model = this.loader.assets.get(id);
+        const model = this.loader.GetAssets(id);
         if (model == undefined) return
 
         const ani = model.GetAnimationClip(aniId)

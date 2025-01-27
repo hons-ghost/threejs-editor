@@ -43,7 +43,7 @@ export class Menu {
     drawAnimation(id: Char) {
         const dom = document.getElementById("clips") as HTMLSelectElement
         const btn = document.getElementById("clipBtn") as HTMLButtonElement
-        const model = this.loader.assets.get(id);
+        const model = this.loader.GetAssets(id);
         if (model == undefined) return
         while (dom.hasChildNodes() && dom.firstChild) dom.removeChild(dom.firstChild)
 
@@ -65,7 +65,7 @@ export class Menu {
     drawMenu() {
         const dom = document.getElementById("menu") as HTMLSelectElement
         const btn = document.getElementById("loadBtn") as HTMLButtonElement
-        const assets = this.loader.assets;
+        const assets = this.loader.fabClasses;
         let html = ""
         assets.forEach((v, k, map) => {
             const modelName = Char[k]
@@ -82,7 +82,7 @@ export class Menu {
         btn.onclick = e
     }
     async LoadModel(id: Char) {
-        const newModel = this.loader.assets.get(id);
+        const newModel = this.loader.GetAssets(id);
         if (!newModel) throw new Error("error");
 
         const [mesh, exist] = await newModel?.UniqModel(Char[id])
@@ -95,7 +95,7 @@ export class Menu {
         this.drawCapture(id)
     }
     async LoadAnimation(id: Char, aniId: Ani) {
-        const model = this.loader.assets.get(id);
+        const model = this.loader.GetAssets(id);
         if (model == undefined) return
 
         const ani = model.GetAnimationClip(aniId)
@@ -104,7 +104,7 @@ export class Menu {
     }
     
     async drawCapture(id: Char) {
-        const newModel = this.loader.assets.get(id);
+        const newModel = this.loader.GetAssets(id);
         if (!newModel) throw new Error("error");
 
         const [mesh, exist] = await newModel?.UniqModel(Char[id])
