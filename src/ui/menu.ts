@@ -5,6 +5,8 @@ import { capture } from './capture';
 import { Loader } from '@Glibs/loader/loader';
 import { Ani, Char } from '@Glibs/types/assettypes';
 import { EffectType } from '@Glibs/types/effecttypes';
+import { AssetModel } from '@Glibs/loader/assetmodel';
+import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 
 
 
@@ -36,6 +38,28 @@ export class Menu {
         const e = () => {
             const v = dom.value
             this.effector.StartEffector(Number(v), new THREE.Vector3(0, 2, 0))
+        }
+        dom.onchange = e
+        btn.onclick = e
+    }
+    drawEmbededAnimation(id: Char, mesh: THREE.Group) {
+        const dom = document.getElementById("embededclips") as HTMLSelectElement
+        const btn = document.getElementById("embededclipBtn") as HTMLButtonElement
+        while (dom.hasChildNodes() && dom.firstChild) dom.removeChild(dom.firstChild)
+
+        console.log(mesh.animations)
+        const asset = this.loader.GetAssets(id)
+        const ani = ("gltf" in asset)? (asset.gltf as GLTF).animations: mesh.animations
+        ani.forEach((clip) => {
+            const opt = document.createElement("option")
+            opt.value = clip.name
+            opt.text = clip.name
+            dom.appendChild(opt)
+        })
+        const e = () => {
+            const k = dom.value
+            const selectedClip = ani.find((clip) => clip.name == k)
+            if (selectedClip) this.modeler.updateAni(selectedClip)
         }
         dom.onchange = e
         btn.onclick = e
@@ -91,6 +115,7 @@ export class Menu {
 
         this.modeler.updateModel(mesh, Char[id], newModel)
         this.drawAnimation(id)
+        this.drawEmbededAnimation(id, mesh)
         this.LoadAnimation(id, 0)
         this.drawCapture(id)
     }
