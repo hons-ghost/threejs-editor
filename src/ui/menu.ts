@@ -19,8 +19,10 @@ export class Menu {
         private setNonGlow: Function,
         defaultLoad: boolean = false,
     ) {
-        if (defaultLoad) this.LoadModel(Char.Male)
+        if (defaultLoad) this.LoadModel(Char.CharHumanMale)
         this.drawMenu()
+        this.drawCharMenu()
+        this.drawUltiMenu()
         this.drawEffectMenu()
     }
     async drawEffectMenu() {
@@ -93,9 +95,52 @@ export class Menu {
         let html = ""
         assets.forEach((v, k, map) => {
             const modelName = Char[k]
+            if (modelName.startsWith("Char")) return
             const opt = document.createElement("option")
             opt.value = k.toString()
             opt.text = modelName
+            dom.appendChild(opt)
+        })
+        const e = () => {
+            const k = Number(dom.value) as Char
+            this.LoadModel(k)
+        }
+        dom.onchange = e
+        btn.onclick = e
+    }
+    drawCharMenu() {
+        const dom = document.getElementById("char") as HTMLSelectElement
+        const btn = document.getElementById("charBtn") as HTMLButtonElement
+        const assets = this.loader.fabClasses;
+        let html = ""
+        assets.forEach((v, k, map) => {
+            const modelName = Char[k]
+            if (!modelName.startsWith("Char")) return
+
+            const opt = document.createElement("option")
+            opt.value = k.toString()
+            opt.text = modelName.substring("Char".length)
+            dom.appendChild(opt)
+        })
+        const e = () => {
+            const k = Number(dom.value) as Char
+            this.LoadModel(k)
+        }
+        dom.onchange = e
+        btn.onclick = e
+    }
+    drawUltiMenu() {
+        const dom = document.getElementById("ulti") as HTMLSelectElement
+        const btn = document.getElementById("ultiBtn") as HTMLButtonElement
+        const assets = this.loader.fabClasses;
+        let html = ""
+        assets.forEach((v, k, map) => {
+            const modelName = Char[k]
+            if (!modelName.startsWith("Ultimate")) return
+
+            const opt = document.createElement("option")
+            opt.value = k.toString()
+            opt.text = modelName.substring("Ultimate".length)
             dom.appendChild(opt)
         })
         const e = () => {

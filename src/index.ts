@@ -6,14 +6,16 @@ import { Helper } from '@Glibs/helper/helper'
 import { Modeler } from './ui/modeler'
 import { Effector } from '@Glibs/magical/effects/effector'
 import { IPostPro, Postpro } from '@Glibs/systems/postprocess/postpro'
-import { Postpro3 } from '@Glibs/systems/postprocess/postpro3'
 import { ParticleTester } from './test/particletester'
 import { EfTester } from './test/eftest'
 import { SlashTest } from './test/slashtest'
 import { AniVfx } from './test/anitest'
 import { NoiseVfx } from './test/noiseslash'
-import { DefaultMap } from './test/defaultmap'
 import { DefaultMap2 } from './test/defaultmap2'
+import WorldMap from '@Glibs/world/worldmap/worldmap'
+import { EventController } from '@Glibs/systems/event/eventctrl'
+import { MapType } from '@Glibs/types/worldmaptypes'
+import UltimateModular from '@Glibs/world/worldmap/ultimatemodular'
 
 export class Editor {
   scene = new THREE.Scene()
@@ -27,6 +29,7 @@ export class Editor {
     */
   })
 
+  eventCtrl = new EventController()
   controls: OrbitControls
   modeler: Modeler
   menu: Menu
@@ -40,6 +43,9 @@ export class Editor {
   aniTest: AniVfx
   noiseTest: NoiseVfx
   pp: IPostPro
+  worldMap: WorldMap
+  modular = new UltimateModular(this.loader, this.scene)
+
   constructor() {
     this.camera.position.set(4, 4, 4)
     this.camera.lookAt(new THREE.Vector3().set(0, 2, 0))
@@ -56,7 +62,7 @@ export class Editor {
     // Renderer End
 
     this.effector.SetNonGlow((mesh: any) => { this.pp.setNonGlow(mesh) })
-    this.light()
+    const light = this.light()
 
     document.body.appendChild(this.renderer.domElement)
     const nonglowfn = (mesh: any) => { this.pp.setNonGlow(mesh) }
@@ -67,10 +73,14 @@ export class Editor {
     this.aniTest = new AniVfx(this.scene)
     this.noiseTest = new NoiseVfx(this.scene)
     // Test End
-    this.helper = new Helper(this.scene, nonglowfn)
+    this.helper = new Helper(this.scene, nonglowfn, { enable: true })
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.modeler = new Modeler(this.scene, this.camera, this.loader, this.helper, this.controls, nonglowfn)
     this.menu = new Menu(this.loader, this.modeler, this.effector, nonglowfn)
+    this.worldMap = new WorldMap(this.loader, this.scene, this.eventCtrl, light, this.modular, nonglowfn)
+    this.worldMap.MakeGround({mapType: MapType.RectMesh, width: 50, gridDivision: 25, grid:true})
+    //this.worldMap.MakeGround({mapType: MapType.HexMesh, rows: 10, cols: 10, gridSize: 1, grid:true})
+
 
     const ground = new DefaultMap2(this.scene, nonglowfn)
     //const ground = new DefaultMap(this.scene, nonglowfn)
@@ -110,6 +120,7 @@ export class Editor {
     directlight.shadow.camera.top = 500
     directlight.shadow.camera.bottom = -500
     this.scene.add(abmbient, /*hemispherelight,*/ directlight, /*this.effector.meshs*/)
+    return directlight
   }
   ground() {
     const texture = new THREE.TextureLoader().load("assets/texture/Cartoon_green_texture_grass.jpg")

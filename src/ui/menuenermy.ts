@@ -5,7 +5,7 @@ import { Loader } from '@Glibs/loader/loader';
 
 export class MenuEnermy {
     defaultDis = 10
-    defaultChar = Char.Female
+    defaultChar = Char.CharHumanFemale
     constructor(
         private loader: Loader, 
         private modeler: Modeler, 
