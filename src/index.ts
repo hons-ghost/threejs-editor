@@ -16,6 +16,8 @@ import WorldMap from '@Glibs/world/worldmap/worldmap'
 import { EventController } from '@Glibs/systems/event/eventctrl'
 import { MapType } from '@Glibs/types/worldmaptypes'
 import UltimateModular from '@Glibs/world/worldmap/ultimatemodular'
+import { TreeTest } from './test/treetest'
+import { Char } from '@Glibs/loader/assettypes'
 
 export class Editor {
   scene = new THREE.Scene()
@@ -44,8 +46,9 @@ export class Editor {
   noiseTest: NoiseVfx
   pp: IPostPro
   worldMap: WorldMap
-  modular = new UltimateModular(this.loader, this.scene)
+  modular = new UltimateModular(this.loader, this.scene, this.eventCtrl)
 
+  treetest = new TreeTest(this.loader.GetAssets(Char.QuaterniusNatureCommontree1), this.eventCtrl)
   constructor() {
     this.camera.position.set(4, 4, 4)
     this.camera.lookAt(new THREE.Vector3().set(0, 2, 0))
@@ -58,7 +61,7 @@ export class Editor {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
     this.renderer.setSize(window.innerWidth, window.innerHeight)
     //this.renderer.setClearColor(0x66ccff, 1)
-    this.pp = new Postpro(this.scene, this.camera, this.renderer)
+    this.pp = new Postpro(this.scene, this.camera, this.renderer, this.eventCtrl)
     // Renderer End
 
     this.effector.SetNonGlow((mesh: any) => { this.pp.setNonGlow(mesh) })
@@ -77,9 +80,14 @@ export class Editor {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.modeler = new Modeler(this.scene, this.camera, this.loader, this.helper, this.controls, nonglowfn)
     this.menu = new Menu(this.loader, this.modeler, this.effector, nonglowfn)
-    this.worldMap = new WorldMap(this.loader, this.scene, this.eventCtrl, light, this.modular, nonglowfn)
+    this.worldMap = new WorldMap(this.loader, this.scene, this.eventCtrl, light)
     this.worldMap.MakeGround({mapType: MapType.RectMesh, width: 50, gridDivision: 25, grid:true})
     //this.worldMap.MakeGround({mapType: MapType.HexMesh, rows: 10, cols: 10, gridSize: 1, grid:true})
+
+    setTimeout(async () => {
+      await this.treetest.MassLoad(1, new THREE.Vector3(0, 0, -4))
+      this.scene.add(this.treetest.Meshs)
+    }, 1000);
 
 
     const ground = new DefaultMap2(this.scene, nonglowfn)
@@ -103,7 +111,7 @@ export class Editor {
     })
   }
   light() {
-    const abmbient = new THREE.AmbientLight(0xffffff, 1)
+    const abmbient = new THREE.AmbientLight(0xffffff, 2)
     const hemispherelight = new THREE.HemisphereLight(0xffffff, 0x333333)
     hemispherelight.position.set(0, 20, 10)
     const directlight = new THREE.DirectionalLight(0xffffff, 3);
@@ -119,7 +127,7 @@ export class Editor {
     directlight.shadow.camera.right = -500
     directlight.shadow.camera.top = 500
     directlight.shadow.camera.bottom = -500
-    this.scene.add(abmbient, /*hemispherelight,*/ directlight, /*this.effector.meshs*/)
+    this.scene.add(abmbient, hemispherelight, directlight, /*this.effector.meshs*/)
     return directlight
   }
   ground() {
@@ -160,6 +168,8 @@ export class Editor {
     this.tester.Update(delta)
     this.slashTester.Update(delta)
     this.noiseTest.Update(delta)
+
+    this.treetest.update(delta)
 
     this.effector.Update(delta, this.test)
     this.helper.CheckStateEnd()

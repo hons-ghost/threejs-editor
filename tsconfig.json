@@ -113,5 +113,6 @@
     "src/gsdk/src/actors/agent",
     "src/gsdk/src/actors/player",
     "src/gsdk/src/world/fluffytree",
+    "src/gsdk/src/systems/qr",
   ]
 }
