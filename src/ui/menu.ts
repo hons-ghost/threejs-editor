@@ -20,9 +20,9 @@ export class Menu {
         defaultLoad: boolean = false,
     ) {
         if (defaultLoad) this.LoadModel(Char.CharHumanMale)
-        this.drawMenu()
-        this.drawCharMenu()
-        this.drawUltiMenu()
+        this.drawCategoryMenu()
+        // this.drawCharMenu()
+        // this.drawUltiMenu()
         this.drawEffectMenu()
     }
     async drawEffectMenu() {
@@ -88,14 +88,57 @@ export class Menu {
         dom.onchange = e
         btn.onclick = e
     }
-    drawMenu() {
+    drawCategoryMenu() {
+        const dom = document.getElementById("cate_menu") as HTMLSelectElement
+        const btn = document.getElementById("cate_loadBtn") as HTMLButtonElement
+        const cate = [
+            ["All", ""],
+            ["Character Human", "CharHuman"],
+            ["Character Monster", "CharMon"],
+            ["Character Animal", "CharAni"],
+            ["KayKit Skeleton Item", "KayKitSkeleton"],
+            ["KayKit Human Item", "KayKitAdv"],
+            ["KayKit Human", "CharHumanKayKit"],
+            ["KayKit Dungeon", "KayKitDungeon"],
+            ["Ocean Starter", "OceanStarter"],
+            ["Ocean Animal", "OceanAniOcean"],
+            ["Kenney Human", "CharHumanKenney"],
+            ["Ultimate Human", "CharHumanUltimate"],
+            ["Ultimate Monster", "CharMonUltimate"],
+            ["Ultimate Lv and Machin", "UltimateLvAndMa"],
+            ["Ultimate Platform", "UltimateModPlatform"],
+            ["Ultimate Nature", "UltimateNature"],
+            ["Ultimate PAP", "UltimatePAP"],
+            ["Quaternius Animal", "CharAniQuaternius"],
+            ["Quaternius Human", "CharHumanQuaternius"],
+            ["Quaternius Mon", "CharMonQuaternius"],
+            ["Quaternius Nature", "QuaterniusNature"],
+            ["Quaternius Card", "QuaterniusCard"],
+        ]
+        cate.forEach((v, k, map) => {
+            const modelName = v[0]
+            const opt = document.createElement("option")
+            opt.value = v[1]
+            opt.text = modelName
+            dom.appendChild(opt)
+        })
+        const e = () => {
+            const k = dom.value
+            this.drawMenu(k)
+        }
+        dom.onchange = e
+        btn.onclick = e
+    }
+    drawMenu(target = "Char") {
         const dom = document.getElementById("menu") as HTMLSelectElement
         const btn = document.getElementById("loadBtn") as HTMLButtonElement
+        const prevBtn = document.getElementById("preloadBtn") as HTMLButtonElement;
+        const nextBtn = document.getElementById("nextloadBtn") as HTMLButtonElement;
+        dom.innerHTML = ""
         const assets = this.loader.fabClasses;
-        let html = ""
         assets.forEach((v, k, map) => {
             const modelName = Char[k]
-            if (modelName.startsWith("Char")) return
+            if (target.length > 0 && !modelName.startsWith(target)) return
             const opt = document.createElement("option")
             opt.value = k.toString()
             opt.text = modelName
@@ -107,6 +150,30 @@ export class Menu {
         }
         dom.onchange = e
         btn.onclick = e
+        prevBtn.onclick = () => {
+            let currentIndex = dom.selectedIndex;
+
+            // 다음 인덱스가 범위를 초과하지 않도록 체크
+            if (currentIndex == 0) {
+                dom.selectedIndex = dom.options.length - 1
+            } else {
+                // 끝에 도달했을 경우 처음으로 돌아가기 (원하지 않으면 이 부분 생략 가능)
+                dom.selectedIndex = currentIndex - 1;
+            }
+            dom.dispatchEvent(new Event('change')); // change 이벤트 수동 발생
+        }
+        nextBtn.onclick = () => {
+            let currentIndex = dom.selectedIndex;
+
+            // 다음 인덱스가 범위를 초과하지 않도록 체크
+            if (currentIndex < dom.options.length - 1) {
+                dom.selectedIndex = currentIndex + 1;
+            } else {
+                // 끝에 도달했을 경우 처음으로 돌아가기 (원하지 않으면 이 부분 생략 가능)
+                dom.selectedIndex = 0;
+            }
+            dom.dispatchEvent(new Event('change')); // change 이벤트 수동 발생
+        }
     }
     drawCharMenu() {
         const dom = document.getElementById("char") as HTMLSelectElement

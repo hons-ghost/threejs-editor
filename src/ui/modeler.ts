@@ -139,7 +139,7 @@ export class Modeler {
         // Choose the larger distance to ensure the model fits in both dimensions
         const cameraZ = Math.max(distance, distanceHorizontally);
 
-        this.camera.position.set(cameraZ + center.x, center.y, cameraZ + center.z);
+        this.camera.position.set(cameraZ + center.x, center.y + center.y, cameraZ + center.z);
         this.camera.lookAt(center);
 
         this.controls.target.copy(center)
