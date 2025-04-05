@@ -18,6 +18,7 @@ import { MapType } from '@Glibs/types/worldmaptypes'
 import UltimateModular from '@Glibs/world/worldmap/ultimatemodular'
 import { TreeTest } from './test/treetest'
 import { Char } from '@Glibs/loader/assettypes'
+import { Alarm } from '@Glibs/systems/alarm/alarm'
 
 export class Editor {
   scene = new THREE.Scene()
@@ -47,6 +48,7 @@ export class Editor {
   pp: IPostPro
   worldMap: WorldMap
   modular = new UltimateModular(this.loader, this.scene, this.eventCtrl)
+  alarm = new Alarm(this.eventCtrl)
 
   treetest = new TreeTest(this.loader.GetAssets(Char.QuaterniusNatureCommontree1), this.eventCtrl)
   constructor() {
@@ -79,7 +81,7 @@ export class Editor {
     this.helper = new Helper(this.scene, nonglowfn, { enable: true })
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.modeler = new Modeler(this.scene, this.camera, this.loader, this.helper, this.controls, nonglowfn)
-    this.menu = new Menu(this.loader, this.modeler, this.effector, nonglowfn)
+    this.menu = new Menu(this.loader, this.modeler, this.effector, nonglowfn, this.eventCtrl)
     this.worldMap = new WorldMap(this.loader, this.scene, this.eventCtrl, light)
     this.worldMap.MakeGround({mapType: MapType.RectMesh, width: 50, gridDivision: 25, grid:true})
     //this.worldMap.MakeGround({mapType: MapType.HexMesh, rows: 10, cols: 10, gridSize: 1, grid:true})

@@ -7,6 +7,8 @@ import { Ani, Char } from '@Glibs/types/assettypes';
 import { EffectType } from '@Glibs/types/effecttypes';
 import { AssetModel } from '@Glibs/loader/assetmodel';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
+import IEventController from '@Glibs/interface/ievent';
+import { EventTypes } from '@Glibs/types/globaltypes';
 
 
 
@@ -17,6 +19,7 @@ export class Menu {
         private modeler: Modeler, 
         private effector: Effector,
         private setNonGlow: Function,
+        private eventCtrl: IEventController,
         defaultLoad: boolean = false,
     ) {
         if (defaultLoad) this.LoadModel(Char.CharHumanMale)
@@ -114,6 +117,7 @@ export class Menu {
             ["Quaternius Mon", "CharMonQuaternius"],
             ["Quaternius Nature", "QuaterniusNature"],
             ["Quaternius Card", "QuaterniusCard"],
+            ["Quaternius Animated Char", "QuaterniusAniChar"],
         ]
         cate.forEach((v, k, map) => {
             const modelName = v[0]
@@ -146,6 +150,7 @@ export class Menu {
         })
         const e = () => {
             const k = Number(dom.value) as Char
+            this.eventCtrl.SendEventMessage(EventTypes.AlarmNormal, dom.selectedOptions[0].text)
             this.LoadModel(k)
         }
         dom.onchange = e
