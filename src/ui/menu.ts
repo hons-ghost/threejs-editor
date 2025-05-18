@@ -50,6 +50,7 @@ export class Menu {
     drawEmbededAnimation(id: Char, mesh: THREE.Group) {
         const dom = document.getElementById("embededclips") as HTMLSelectElement
         const btn = document.getElementById("embededclipBtn") as HTMLButtonElement
+        if(!dom || !btn) return
         while (dom.hasChildNodes() && dom.firstChild) dom.removeChild(dom.firstChild)
 
         console.log(mesh.animations)
