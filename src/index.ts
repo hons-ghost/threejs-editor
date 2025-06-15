@@ -50,7 +50,7 @@ export class Editor {
   modular = new UltimateModular(this.loader, this.scene, this.eventCtrl)
   alarm = new Alarm(this.eventCtrl)
 
-  treetest = new TreeTest(this.loader.GetAssets(Char.QuaterniusNatureCommontree1), this.eventCtrl)
+  treetest = new TreeTest(this.loader.GetAssets(Char.QuaterniusNatureBushCommon), this.eventCtrl)
   constructor() {
     this.camera.position.set(4, 4, 4)
     this.camera.lookAt(new THREE.Vector3().set(0, 2, 0))

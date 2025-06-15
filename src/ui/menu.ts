@@ -119,6 +119,7 @@ export class Menu {
             ["Quaternius Nature", "QuaterniusNature"],
             ["Quaternius Card", "QuaterniusCard"],
             ["Quaternius Animated Char", "QuaterniusAniChar"],
+            ["Items", "Items"],
         ]
         cate.forEach((v, k, map) => {
             const modelName = v[0]
