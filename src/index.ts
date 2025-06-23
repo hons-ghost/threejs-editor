@@ -39,7 +39,7 @@ export class Editor {
 
   helper: Helper
   loader = new Loader("./")
-  effector = new Effector(this.scene)
+  effector = new Effector(this.scene, this.eventCtrl)
   nebula: ParticleTester
   tester: EfTester
   slashTester: SlashTest
