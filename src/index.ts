@@ -19,6 +19,7 @@ import UltimateModular from '@Glibs/world/worldmap/ultimatemodular'
 import { TreeTest } from './test/treetest'
 import { Char } from '@Glibs/loader/assettypes'
 import { Alarm } from '@Glibs/systems/alarm/alarm'
+import { Postpro2 } from '@Glibs/systems/postprocess/postpro2'
 
 export class Editor {
   scene = new THREE.Scene()
@@ -63,7 +64,7 @@ export class Editor {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
     this.renderer.setSize(window.innerWidth, window.innerHeight)
     //this.renderer.setClearColor(0x66ccff, 1)
-    this.pp = new Postpro(this.scene, this.camera, this.renderer, this.eventCtrl)
+    this.pp = new Postpro2(this.scene, this.camera, this.renderer, this.eventCtrl)
     // Renderer End
 
     this.effector.SetNonGlow((mesh: any) => { this.pp.setNonGlow(mesh) })
@@ -78,11 +79,11 @@ export class Editor {
     this.aniTest = new AniVfx(this.scene)
     this.noiseTest = new NoiseVfx(this.scene)
     // Test End
-    this.helper = new Helper(this.scene, nonglowfn, { enable: true })
+    this.helper = new Helper(this.scene, this.eventCtrl, { enable: true })
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.modeler = new Modeler(this.scene, this.camera, this.loader, this.helper, this.controls, nonglowfn)
     this.menu = new Menu(this.loader, this.modeler, this.effector, nonglowfn, this.eventCtrl)
-    this.worldMap = new WorldMap(this.loader, this.scene, this.eventCtrl, light)
+    this.worldMap = new WorldMap(this.loader, this.scene, this.eventCtrl, light, this.camera, this.renderer)
     this.worldMap.MakeGround({mapType: MapType.RectMesh, width: 50, gridDivision: 25, grid:true})
     //this.worldMap.MakeGround({mapType: MapType.HexMesh, rows: 10, cols: 10, gridSize: 1, grid:true})
 
