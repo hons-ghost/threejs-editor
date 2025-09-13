@@ -105,6 +105,7 @@ export class Menu {
             ["KayKit Human", "CharHumanKayKit"],
             ["KayKit Dungeon", "KayKitDungeon"],
             ["KayKit Resource", "KayKitResource"],
+            ["KayKit Halloween", "KayKitHalloween"],
             ["Ocean Starter", "OceanStarter"],
             ["Ocean Animal", "CharAniOcean"],
             ["Easypack Monster", "CharAniEasypack"],
