@@ -20,6 +20,7 @@ import { TreeTest } from './test/treetest'
 import { Char } from '@Glibs/loader/assettypes'
 import { Alarm } from '@Glibs/systems/alarm/alarm'
 import { Postpro2 } from '@Glibs/systems/postprocess/postpro2'
+import DefaultLights from '@Glibs/systems/lights/defaultlights'
 
 export class Editor {
   scene = new THREE.Scene()
@@ -68,7 +69,7 @@ export class Editor {
     // Renderer End
 
     this.effector.SetNonGlow((mesh: any) => { this.pp.setNonGlow(mesh) })
-    const light = this.light()
+    const light = new DefaultLights(this.scene)
 
     document.body.appendChild(this.renderer.domElement)
     const nonglowfn = (mesh: any) => { this.pp.setNonGlow(mesh) }
