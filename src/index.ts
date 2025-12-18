@@ -69,7 +69,7 @@ export class Editor {
     // Renderer End
 
     this.effector.SetNonGlow((mesh: any) => { this.pp.setNonGlow(mesh) })
-    const light = new DefaultLights(this.scene)
+    const light = new DefaultLights(this.scene, this.eventCtrl)
 
     document.body.appendChild(this.renderer.domElement)
     const nonglowfn = (mesh: any) => { this.pp.setNonGlow(mesh) }

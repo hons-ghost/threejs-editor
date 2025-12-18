@@ -106,6 +106,7 @@ export class Menu {
             ["KayKit Dungeon", "KayKitDungeon"],
             ["KayKit Resource", "KayKitResource"],
             ["KayKit Halloween", "KayKitHalloween"],
+            ["KayKit Medival Hexagon", "KaykitMedHexagon"],
             ["Ocean Starter", "OceanStarter"],
             ["Ocean Animal", "CharAniOcean"],
             ["Easypack Monster", "CharAniEasypack"],
