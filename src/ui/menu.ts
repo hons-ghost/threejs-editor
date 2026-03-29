@@ -124,6 +124,7 @@ export class Menu {
             ["Quaternius Card", "QuaterniusCard"],
             ["Quaternius Animated Char", "QuaterniusAniChar"],
             ["PPs Dungeon", "PPsDungeonPack"],
+            ["Space", "Space"],
             ["Items", "Items"],
         ]
         cate.forEach((v, k, map) => {
