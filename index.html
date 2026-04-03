@@ -82,6 +82,26 @@
             </select>
             <button class="btn btn-outliine-secondary bg-white" type="button" id="embededclipBtn">Do</button>
         </div>
+        <div class="container border rounded p-2 m-1 bg-white">
+            <select class="form-select mb-2" aria-label="Action select" id="actionmenu">
+                <options selected>select action</options>
+            </select>
+            <div class="input-group mb-2">
+                <span class="input-group-text">Lv</span>
+                <input class="form-control" type="number" min="1" step="1" value="1" id="actionLevel">
+            </div>
+            <div class="container p-0">
+                <div class="row g-1">
+                    <div class="col">
+                        <button class="btn btn-outliine-secondary bg-white w-100" type="button" id="actionApplyBtn">Do</button>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-outliine-secondary bg-white w-100" type="button" id="actionClearBtn">Clear</button>
+                    </div>
+                </div>
+            </div>
+            <div class="small pt-2" id="actionStatus">select action</div>
+        </div>
     </div>
 </body>
 

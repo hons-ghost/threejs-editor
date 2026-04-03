@@ -21,6 +21,8 @@ import { Char } from '@Glibs/loader/assettypes'
 import { Alarm } from '@Glibs/systems/alarm/alarm'
 import { Postpro2 } from '@Glibs/systems/postprocess/postpro2'
 import DefaultLights from '@Glibs/systems/lights/defaultlights'
+import { InitActionRegistry } from '@Glibs/actions/actionregisterinit'
+import { Canvas } from '@Glibs/systems/event/canvas'
 
 export class Editor {
   scene = new THREE.Scene()
@@ -51,6 +53,8 @@ export class Editor {
   worldMap: WorldMap
   modular = new UltimateModular(this.loader, this.scene, this.eventCtrl)
   alarm = new Alarm(this.eventCtrl)
+
+  canvas = new Canvas(this.eventCtrl)
 
   treetest = new TreeTest(this.loader.GetAssets(Char.QuaterniusNatureBushCommon), this.eventCtrl)
   constructor() {
@@ -83,6 +87,7 @@ export class Editor {
     this.helper = new Helper(this.scene, this.eventCtrl, { enable: true })
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.modeler = new Modeler(this.scene, this.camera, this.loader, this.helper, this.controls, nonglowfn)
+    InitActionRegistry(this.eventCtrl, this.scene, this.camera as any)
     this.menu = new Menu(this.loader, this.modeler, this.effector, nonglowfn, this.eventCtrl)
     this.worldMap = new WorldMap(this.loader, this.scene, this.eventCtrl, light, this.camera, this.renderer)
     this.worldMap.MakeGround({mapType: MapType.RectMesh, width: 50, gridDivision: 25, grid:true})
@@ -153,6 +158,7 @@ export class Editor {
     this.tester.Update(delta)
     this.slashTester.Update(delta)
     this.noiseTest.Update(delta)
+    this.canvas.update()
 
     this.treetest.update(delta)
 
